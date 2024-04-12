@@ -3,6 +3,9 @@ import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useNavigation } from '@react-navigation/native'
+import { createAccount, login } from '../DataServices/DataServices'
+import { IToken } from '../inerfaces/inerface'
+import { LoginProps, Props } from '../type'
 
 const LoginFormComponent = () => {
     const [username , setUsername] = useState<string>('')
@@ -10,25 +13,40 @@ const LoginFormComponent = () => {
     const [edit, setEdit] = useState<boolean>(true)
 
 
-    const navigate = useNavigation()
+    const navigate = useNavigation <LoginProps>()
     
-    const handleSubmite = () => {
+    const handleSubmite = async () => {
         const userData = {
             username: username,
             password: password
         }
         
-        navigate.navigate("ProfileScreen")
+        if(edit){
+            let token: IToken = await login(userData);
+            console.log(token)
+            if(token){
+                navigate.navigate("ProfileScreen")
 
+            }
+        } else {
+            createAccount(userData);
+        }
     }
+
+    const handleChange = () => {
+        setEdit(!edit);
+    }
+
+
 
   return (
     <View style={styles.Container}>
       <Text style={{paddingBottom : 25, fontSize: 36}}>{edit ? 'Login Page' : 'Registration Page'}</Text>
       <TextInput style={styles.Input} placeholder='Username' value={username} onChangeText={setUsername}/>
       <TextInput style={styles.Input} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry/>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '80%' }}>            
-      <Text style={{color: 'blue', textDecorationLine: 'underline'}} >{edit ? 'Register' : 'Login'}</Text>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '80%' }} >            
+      <Text style={{color: 'blue', textDecorationLine: 'underline'}} onPress={handleChange}>{edit ? 'Register' : 'Login'}</Text>
             <Button title='Submit' onPress={handleSubmite}/>
         </View>
     </View>
@@ -53,6 +71,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: 'white',
         marginBottom: 10,
-        padding: 5,
+        paddingHorizontal: 10,
+        // padding: 5,
     },
 })
+
