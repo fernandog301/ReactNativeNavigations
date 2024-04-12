@@ -1,6 +1,6 @@
 import { Button, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
+import { TextInput } from 'react-native'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { useNavigation } from '@react-navigation/native'
 import { createAccount, login } from '../DataServices/DataServices'
